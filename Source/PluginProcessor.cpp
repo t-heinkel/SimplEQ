@@ -181,7 +181,7 @@ bool SimplEQAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* SimplEQAudioProcessor::createEditor()
 {
-    return new SimplEQAudioProcessorEditor (*this);
+    return new SimplEQAudioProcessorEditor(*this);
     //return new juce::GenericAudioProcessorEditor(*this);
 }
 
@@ -221,17 +221,26 @@ ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts) {
     return settings;
 }
 
-void SimplEQAudioProcessor::updatePeakFilter(const ChainSettings& chainSettings) {
-    auto peakCoefficients = juce::dsp::IIR::Coefficients<float>::makePeakFilter(getSampleRate(),
+Coefficients makePeakFilter(const ChainSettings& chainSettings, double sampleRate) {
+
+    return juce::dsp::IIR::Coefficients<float>::makePeakFilter(sampleRate,
         chainSettings.peakFreq,
         chainSettings.peakQuality,
-        juce::Decibels::decibelsToGain(chainSettings.peakGainInDecibels)); // expects gain value, therefore convert decibels to gain
-    
+        juce::Decibels::decibelsToGain(chainSettings.peakGainInDecibels));
+}
+
+void SimplEQAudioProcessor::updatePeakFilter(const ChainSettings& chainSettings) {
+    //auto peakCoefficients = juce::dsp::IIR::Coefficients<float>::makePeakFilter(getSampleRate(),
+    //    chainSettings.peakFreq,
+    //    chainSettings.peakQuality,
+    //    juce::Decibels::decibelsToGain(chainSettings.peakGainInDecibels)); // expects gain value, therefore convert decibels to gain
+
+    auto peakCoefficients = makePeakFilter(chainSettings, getSampleRate());
     updateCoefficients(leftChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
     updateCoefficients(rightChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
 }
 
-void SimplEQAudioProcessor::updateCoefficients(Coefficients& old, const Coefficients& replacements) {
+void /*SimplEQAudioProcessor::*/updateCoefficients(Coefficients &old, const Coefficients &replacements) {
     *old = *replacements;
 }
 
@@ -243,8 +252,8 @@ void SimplEQAudioProcessor::updateLowCutFilters(const ChainSettings& chainSettin
     auto& leftLowCut = leftChain.get<ChainPositions::LowCut>();
     auto& rightLowCut = rightChain.get<ChainPositions::LowCut>();
 
-    updateCutFilter(leftLowCut, cutCoefficients, chainSettings.lowCutSlope);
     updateCutFilter(rightLowCut, cutCoefficients, chainSettings.lowCutSlope);
+    updateCutFilter(leftLowCut, cutCoefficients, chainSettings.lowCutSlope);
 }
 
 void SimplEQAudioProcessor::updateHighCutFilters(const ChainSettings& chainSettings) {
