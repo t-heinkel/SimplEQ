@@ -111,6 +111,14 @@ void SimplEQAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
 
     leftChannelFifo.prepare(samplesPerBlock);
     rightChannelFifo.prepare(samplesPerBlock);
+
+    /* set up oscillator for testing the specrum analyzer
+    * other part is in prepareToPlay()
+    */
+    /*osc.initialise([](float x) {return std::sin(x); });
+    spec.numChannels = getTotalNumOutputChannels();
+    osc.prepare(spec);
+    osc.setFrequency(500);*/
 }
 
 void SimplEQAudioProcessor::releaseResources()
@@ -163,6 +171,13 @@ void SimplEQAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
     updateFilters();
 
     juce::dsp::AudioBlock<float> block(buffer);
+
+    /* set up oscillator for testing the spektrum analyzer
+    * other part is in processBlock()
+    */
+    //buffer.clear();
+    //juce::dsp::ProcessContextReplacing<float> stereoContext(block);
+    //osc.process(stereoContext);
 
     auto leftBlock = block.getSingleChannelBlock(0);
     auto rightBlock = block.getSingleChannelBlock(1);
