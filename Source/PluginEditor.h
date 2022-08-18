@@ -259,6 +259,8 @@ private:
 };
 
 //==============================================================================
+struct PowerButton : juce::ToggleButton{};
+struct AnalyzerButton : juce::ToggleButton{};
 /**
 */
 class SimplEQAudioProcessorEditor  : public juce::AudioProcessorEditor
@@ -297,7 +299,8 @@ private:
         lowCutSlopeSliderAttachement,
         highCutSlopeSliderAttachement;
 
-    juce::ToggleButton lowcutBypassButton, peakBypassButton, highcutBypassButton, analyzerEnabledButton;
+    PowerButton lowcutBypassButton, peakBypassButton, highcutBypassButton;
+    AnalyzerButton analyzerEnabledButton;
 
     using ButtonAttachment = APVTS::ButtonAttachment;
     ButtonAttachment lowcutBypassButtonAttachment,
