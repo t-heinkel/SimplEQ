@@ -228,7 +228,8 @@ private:
 
 struct ResponseCurveComponent : juce::Component,
     juce::AudioProcessorParameter::Listener,
-    juce::Timer {
+    juce::Timer 
+{
     ResponseCurveComponent(SimplEQAudioProcessor&);
     ~ResponseCurveComponent();
 
@@ -241,6 +242,11 @@ struct ResponseCurveComponent : juce::Component,
     void resized() override;
 
     void paint(juce::Graphics& g) override;
+
+    void toggleAnalysisEnablement(bool enabled) 
+    {
+        shouldShowFFTAnalysis = enabled;
+    }
 private:
     SimplEQAudioProcessor& audioProcessor;
     juce::Atomic<bool> parametersChanged{ false };
@@ -256,6 +262,8 @@ private:
     juce::Rectangle<int> getAnalysisArea();
 
     PathProducer leftPathProducer, rightPathProducer;
+
+    bool shouldShowFFTAnalysis = true;
 };
 
 //==============================================================================
